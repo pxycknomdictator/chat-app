@@ -52,7 +52,7 @@ export const authRegister = asyncHandler(async (req, res, _next) => {
   return res.status(201).json(new ApiResponse(201, "User Registered", user));
 });
 
-export const authLogin = asyncHandler(async (req, res, next) => {
+export const authLogin = asyncHandler(async (req, res, _next) => {
   const { email, password } = req.body;
 
   if (![email, password].every((user) => user?.trim())) {
@@ -81,17 +81,41 @@ export const authLogin = asyncHandler(async (req, res, next) => {
     return res.status(400).json(new ApiError(400, "Invalid User Credentials"));
   }
 
-  const user = {
+  const { access_token, refreshToken } = generateAccessAndRefreshToken({
     _id: isUserExists._id,
     email: isUserExists.email,
     username: isUserExists.username,
-  };
+  });
 
-  const { access_token, refreshToken } = generateAccessAndRefreshToken(user);
+  const user = await User.findByIdAndUpdate(
+    isUserExists._id,
+    {
+      $set: { refreshToken },
+    },
+    { new: true },
+  ).select("-password -refreshToken");
 
   return res
     .cookie("access_token", access_token, ACCESS_TOKEN)
     .cookie("refresh_token", refreshToken, REFRESH_TOKEN)
     .status(200)
-    .json(new ApiResponse(200, "User Login", user));
+    .json(new ApiResponse(200, "User Login", { user, access_token }));
+});
+
+export const authLogout = asyncHandler(async (req, res, _next) => {
+  const { _id } = req.user;
+
+  if (!_id) return res.status(404).json(new ApiError(404, "User not found"));
+
+  const user = await User.findByIdAndUpdate(
+    _id,
+    { $unset: { refreshToken: 1 } },
+    { new: true },
+  ).select("-password");
+
+  return res
+    .cookie("access_token", "", { expires: new Date(0) })
+    .cookie("refresh_token", "", { expires: new Date(0) })
+    .status(200)
+    .json(new ApiResponse(200, "User Logout", user));
 });
