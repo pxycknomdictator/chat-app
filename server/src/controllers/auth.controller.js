@@ -1,4 +1,5 @@
 import validator from "validator";
+import jwt from "jsonwebtoken";
 
 import { User } from "../models/user.model.js";
 
@@ -11,6 +12,7 @@ import {
   ACCESS_TOKEN,
   REFRESH_TOKEN,
 } from "../utils/token.js";
+import { config } from "../lib/config.js";
 
 export const authRegister = asyncHandler(async (req, res, _next) => {
   const { username, email, password } = req.body;
@@ -129,4 +131,54 @@ export const authProfile = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(_id).select("-password -refreshToken");
   return res.status(200).json(new ApiResponse(200, "User Profile", user));
+});
+
+export const authRefreshToken = asyncHandler(async (req, res, next) => {
+  const { refresh_token } = req.body;
+
+  if (!refresh_token) {
+    return res.status(404).json(new ApiError(404, "refresh token is required"));
+  }
+
+  let token;
+  try {
+    token = jwt.verify(refresh_token, config.REFRESH_TOKEN_SECRET_KEY);
+  } catch (error) {
+    return res
+      .status(401)
+      .json(new ApiError(401, "Unauthorized or expired token"));
+  }
+
+  if (!token) {
+    return res.status(401).json(new ApiError(401, "unauthorized token"));
+  }
+
+  const user = await User.findById({ _id: token.id }).select(
+    "-password +refreshToken",
+  );
+
+  if (user.refreshToken?.trim() !== refresh_token?.trim()) {
+    return res
+      .status(404)
+      .json(new ApiError(404, "Refresh token are not matched"));
+  }
+
+  const { access_token, refreshToken } = generateAccessAndRefreshToken(user);
+
+  const authUser = await User.findByIdAndUpdate(
+    user._id,
+    { $set: { refreshToken } },
+    { new: true },
+  ).select("-password -refreshToken");
+
+  return res
+    .cookie("access_token", access_token, ACCESS_TOKEN)
+    .cookie("refresh_token", refreshToken, REFRESH_TOKEN)
+    .status(200)
+    .json(
+      new ApiResponse(200, "Refresh Token generated", {
+        user: authUser,
+        access_token,
+      }),
+    );
 });

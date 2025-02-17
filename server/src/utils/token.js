@@ -3,20 +3,21 @@ import jwt from "jsonwebtoken";
 import { config } from "../lib/config.js";
 
 const generateAccessToken = (user) => {
-  return jwt.sign(user, config.ACCESS_TOKEN_SECRET_KEY, {
+  const payload = { _id: user._id };
+  return jwt.sign(payload, config.ACCESS_TOKEN_SECRET_KEY, {
     expiresIn: config.ACCESS_TOKEN_EXPIRY,
   });
 };
 
-const generateRefreshToken = (_id) => {
-  return jwt.sign({ _id }, config.REFRESH_TOKEN_SECRET_KEY, {
+const generateRefreshToken = (id) => {
+  return jwt.sign({ id }, config.REFRESH_TOKEN_SECRET_KEY, {
     expiresIn: config.REFRESH_TOKEN_EXPIRY,
   });
 };
 
 export const generateAccessAndRefreshToken = (user) => {
   const access_token = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user._id);
+  const refreshToken = generateRefreshToken(user.id);
 
   return { access_token, refreshToken };
 };
