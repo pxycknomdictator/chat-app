@@ -119,3 +119,14 @@ export const authLogout = asyncHandler(async (req, res, _next) => {
     .status(200)
     .json(new ApiResponse(200, "User Logout", user));
 });
+
+export const authProfile = asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+
+  if (!_id) {
+    return res.status(404).json(new ApiError(404, "unauthorized person"));
+  }
+
+  const user = await User.findById(_id).select("-password -refreshToken");
+  return res.status(200).json(new ApiResponse(200, "User Profile", user));
+});
