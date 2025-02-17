@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
 import { config } from "./lib/config.js";
-import { errorHandler } from "./lib/errorHandler.js";
+import { errorHandler } from "./error/errorHandler.js";
 
 const app = express();
 const corsOptions = { origin: config.ORIGIN, credentials: true };
