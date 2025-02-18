@@ -153,9 +153,9 @@ export const authRefreshToken = asyncHandler(async (req, res, next) => {
     return res.status(401).json(new ApiError(401, "unauthorized token"));
   }
 
-  const user = await User.findById({ _id: token.id }).select(
-    "-password +refreshToken",
-  );
+  const user = await User.findById({ _id: token._id })
+    .select("-password +refreshToken")
+    .lean();
 
   if (user.refreshToken?.trim() !== refresh_token?.trim()) {
     return res
