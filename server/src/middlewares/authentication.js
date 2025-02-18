@@ -29,6 +29,5 @@ export const protectRoute = async (req, res, next) => {
     next();
   } catch (error) {
     return res.status(401).json(new ApiError(401, "Invalid or expired token"));
-    next(error);
   }
 };
