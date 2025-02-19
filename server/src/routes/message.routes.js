@@ -1,10 +1,16 @@
 import { Router } from "express";
-import { createMessage } from "../controllers/message.controller.js";
+import {
+  createMessage,
+  getMessages,
+} from "../controllers/message.controller.js";
 import { protectRoute } from "../middlewares/authentication.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
-router.post("/", protectRoute, upload.single("file"), createMessage);
+router
+  .route("/")
+  .post(protectRoute, upload.single("file"), createMessage)
+  .get(protectRoute, getMessages);
 
 export default router;
