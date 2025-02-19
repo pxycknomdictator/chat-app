@@ -101,7 +101,9 @@ export const authLogin = asyncHandler(async (req, res, _next) => {
     .cookie("access_token", access_token, ACCESS_TOKEN)
     .cookie("refresh_token", refreshToken, REFRESH_TOKEN)
     .status(200)
-    .json(new ApiResponse(200, "User Login", { user, access_token }));
+    .json(
+      new ApiResponse(200, "User Login", { user, access_token, refreshToken }),
+    );
 });
 
 export const authLogout = asyncHandler(async (req, res, _next) => {
@@ -134,7 +136,7 @@ export const authProfile = asyncHandler(async (req, res, next) => {
 });
 
 export const authRefreshToken = asyncHandler(async (req, res, next) => {
-  const { refresh_token } = req.body;
+  const refresh_token = req.body.refresh_token || req.cookies.refresh_token;
 
   if (!refresh_token) {
     return res.status(404).json(new ApiError(404, "refresh token is required"));
@@ -176,9 +178,10 @@ export const authRefreshToken = asyncHandler(async (req, res, next) => {
     .cookie("refresh_token", refreshToken, REFRESH_TOKEN)
     .status(200)
     .json(
-      new ApiResponse(200, "Refresh Token generated", {
+      new ApiResponse(200, "Token refreshed", {
         user: authUser,
         access_token,
+        refreshToken,
       }),
     );
 });
