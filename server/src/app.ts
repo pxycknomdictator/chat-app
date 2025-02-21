@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 
 import { corsOption } from "./lib/options.js";
+import { errorHandler } from "./lib/globalErrorHandler.js";
 
 const app = express();
 
@@ -14,5 +15,7 @@ app.use(cookieParser());
 app.use(cors(corsOption));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+app.use(errorHandler);
 
 export { app };
