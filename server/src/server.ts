@@ -1,16 +1,10 @@
 import { createServer } from "node:http";
-import { Request, Response } from "express";
 
 import { app } from "./app.js";
-
-app.get("/", (req: Request, res: Response) => {
-  res
-    .status(200)
-    .json({ message: "Hello From Express Server! 😃", success: true });
-});
+import { configurations } from "./config/config.js";
 
 (async () => {
-  const PORT = process.env.PORT ?? 9000;
+  const PORT = configurations.PORT ?? 9000;
   const server = createServer(app);
 
   server.listen(PORT, () =>
