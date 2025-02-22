@@ -1,4 +1,5 @@
 import validator from "validator";
+import jwt from "jsonwebtoken";
 
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -9,6 +10,7 @@ import { NextFunction, Request, Response } from "express";
 import { decodePassword, hashPassword } from "../lib/password.js";
 import { generateAccessAndRefreshToken } from "../utils/token.js";
 import { configurations } from "../config/config.js";
+import { Id } from "../../types/express.js";
 
 interface RequestBody {
   username: string;
@@ -153,5 +155,49 @@ export const authLogout = asyncHandler(
       });
 
     return res.status(200).json(new ApiResponse(200, "User Logout", user));
+  },
+);
+
+export const authRefreshToken = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const cookie = req.cookies.refreshToken || req.body.refreshToken;
+
+    let rawToken: Id;
+
+    try {
+      rawToken = jwt.verify(
+        cookie,
+        configurations.JWT_REFRESH_TOKEN_SECRET_KEY!,
+      ) as Id;
+    } catch (error) {
+      return res
+        .status(404)
+        .json(new ApiError(404, "Refresh Token Expired Please Login"));
+    }
+
+    const user = await User.findById(rawToken._id).select("-password");
+
+    if (!user) {
+      return res.status(404).json(new ApiError(404, "User not found"));
+    }
+
+    const { accessToken, refreshToken } = generateAccessAndRefreshToken(res, {
+      _id: user._id,
+      username: user?.username,
+      email: user?.email,
+    });
+
+    await User.findByIdAndUpdate(
+      user._id,
+      { refreshToken },
+      { new: true },
+    ).select("-password");
+
+    return res.status(200).json(
+      new ApiResponse(200, "Token is refreshed", {
+        accessToken,
+        refreshToken,
+      }),
+    );
   },
 );

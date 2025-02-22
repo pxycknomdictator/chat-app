@@ -1,5 +1,12 @@
 import { Request } from "express";
-import { JwtPayload } from "jsonwebtoken";
+
+export interface JwtPayload {
+  _id: Schema.Types.ObjectId;
+  username: string;
+  email: string;
+}
+
+export type Id = { _id: Schema.Types.ObjectId };
 
 declare global {
   namespace Express {
