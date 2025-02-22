@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
@@ -14,6 +16,7 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(cors(corsOption));
 app.use(express.json({ limit: "10mb" }));
+app.use(express.static(path.resolve("public", "temp")));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 app.use(errorHandler);
