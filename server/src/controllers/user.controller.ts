@@ -8,6 +8,7 @@ import { User } from "../models/user.model.js";
 import { NextFunction, Request, Response } from "express";
 import { decodePassword, hashPassword } from "../lib/password.js";
 import { generateAccessAndRefreshToken } from "../utils/token.js";
+import { configurations } from "../config/config.js";
 
 interface RequestBody {
   username: string;
@@ -118,5 +119,39 @@ export const authLogin = asyncHandler(
         user,
       }),
     );
+  },
+);
+
+export const authLogout = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const _id = req.user?._id;
+
+    if (!_id) {
+      return res.status(400).json(new ApiResponse(400, "User not found"));
+    }
+
+    const user = await User.findByIdAndUpdate(
+      _id,
+      { $unset: { refreshToken: "" } },
+      { new: true },
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json(new ApiResponse(404, "User not found"));
+    }
+
+    res
+      .clearCookie("accessToken", {
+        httpOnly: true,
+        secure: configurations.NODE_ENV === "production",
+        sameSite: "strict",
+      })
+      .clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: configurations.NODE_ENV === "production",
+        sameSite: "strict",
+      });
+
+    return res.status(200).json(new ApiResponse(200, "User Logout", user));
   },
 );
