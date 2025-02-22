@@ -48,6 +48,9 @@ importers:
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.4
+      '@types/validator':
+        specifier: ^13.12.2
+        version: 13.12.2
       prettier:
         specifier: ^3.5.1
         version: 3.5.1
@@ -107,6 +110,9 @@ packages:
 
   '@types/serve-static@1.15.7':
     resolution: {integrity: sha512-W8Ym+h8nhuRwaKPaDw34QUkwsGi6Rc4yYqvKFo5rm2FUEhCFbzVWrxXUxuKK8TASjWsysJY0nsmNCGhCOIsrOw==}
+
+  '@types/validator@13.12.2':
+    resolution: {integrity: sha512-6SlHBzUW8Jhf3liqrGGXyTJSIFe4nqlJ5A5KaMZ2l/vbM3Wh3KSybots/wfWVzNLK4D1NZluDlSQIbIEPx6oyA==}
 
   '@types/webidl-conversions@7.0.3':
     resolution: {integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==}
@@ -599,6 +605,8 @@ snapshots:
       '@types/http-errors': 2.0.4
       '@types/node': 22.13.4
       '@types/send': 0.17.4
+
+  '@types/validator@13.12.2': {}
 
   '@types/webidl-conversions@7.0.3': {}
 
