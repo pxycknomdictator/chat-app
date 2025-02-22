@@ -6,13 +6,19 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 import { User } from "../models/user.model.js";
 import { NextFunction, Request, Response } from "express";
-import { hashPassword } from "../lib/password.js";
+import { decodePassword, hashPassword } from "../lib/password.js";
+import { generateAccessAndRefreshToken } from "../utils/token.js";
 
 interface RequestBody {
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
+}
+
+interface Body {
+  email: string;
+  password: string;
 }
 
 export const authRegister = asyncHandler(
@@ -61,6 +67,55 @@ export const authRegister = asyncHandler(
         username: user.username,
         email: user.email,
         avatar: user.avatar,
+      }),
+    );
+  },
+);
+
+export const authLogin = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password }: Body = req.body;
+
+    const fields = [email, password].every((user) => user?.trim());
+
+    if (!fields) {
+      return res.status(400).json(new ApiError(400, "All Fields are Required"));
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.status(400).json(new ApiError(400, "Invalid Email Address"));
+    }
+
+    const isExists = await User.findOne({ email }).select("+password");
+
+    if (!isExists) {
+      return res.status(400).json(new ApiError(400, "Invalid Credentials"));
+    }
+
+    const isPasswordCorrect = await decodePassword(password, isExists.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json(new ApiError(400, "Invalid Credentials"));
+    }
+
+    const user = {
+      _id: isExists._id,
+      username: isExists.username,
+      email: isExists.email,
+    };
+
+    const { accessToken, refreshToken } = generateAccessAndRefreshToken(
+      res,
+      user,
+    );
+
+    await User.findByIdAndUpdate(user._id, { refreshToken }, { new: true });
+
+    return res.status(200).json(
+      new ApiResponse(200, "User Logged In", {
+        accessToken,
+        refreshToken,
+        user,
       }),
     );
   },

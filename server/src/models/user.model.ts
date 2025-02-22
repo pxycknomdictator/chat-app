@@ -12,6 +12,7 @@ interface UserModel extends Document {
   password: string;
   status: Status;
   avatar?: string;
+  refreshToken: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,6 +43,10 @@ const userSchema = new Schema<UserModel>(
       type: String,
       enum: Object.values(Status),
       default: Status.OFFLINE,
+    },
+    refreshToken: {
+      type: String,
+      select: false,
     },
   },
   { timestamps: true },

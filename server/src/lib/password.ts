@@ -7,3 +7,11 @@ export const hashPassword = async (password: string) => {
     throw new Error(`Failed to hash password ${error}`);
   }
 };
+
+export const decodePassword = async (password: string, hash: string) => {
+  try {
+    return await argon2.verify(hash, password);
+  } catch (error) {
+    throw new Error(`Failed to hash password ${error}`);
+  }
+};
