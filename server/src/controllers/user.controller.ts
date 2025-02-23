@@ -243,3 +243,27 @@ export const authProfile = asyncHandler(
     return res.status(200).json(new ApiResponse(200, "User Profile", user));
   },
 );
+
+export const authDelete = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const _id = req.user?._id;
+
+    await User.findByIdAndDelete(_id).select("-password -refreshToken");
+
+    res
+      .clearCookie("accessToken", {
+        httpOnly: true,
+        secure: configurations.NODE_ENV === "production",
+        sameSite: "strict",
+      })
+      .clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: configurations.NODE_ENV === "production",
+        sameSite: "strict",
+      });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "User Deleted Successfully"));
+  },
+);
