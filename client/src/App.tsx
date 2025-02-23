@@ -5,15 +5,15 @@ import {
   Route,
 } from "react-router-dom";
 
-const Dashboard = () => <h1>Dashboard</h1>;
-const Register = () => <h1>Register</h1>;
-const Login = () => <h1>Login</h1>;
+import { Chat } from "./pages/Chat";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 
 export const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Chat />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
       </Route>,
