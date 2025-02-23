@@ -1,4 +1,5 @@
 import { Schema, model, Document } from "mongoose";
+import { configurations } from "../config/config.js";
 
 enum Status {
   ONLINE = "online",
@@ -37,7 +38,7 @@ const userSchema = new Schema<UserModel>(
     },
     avatar: {
       type: String,
-      default: "",
+      default: `${configurations.URL}:${configurations.PORT}/avatar.svg`,
     },
     status: {
       type: String,

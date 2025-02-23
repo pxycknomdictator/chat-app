@@ -210,7 +210,7 @@ export const authUsers = asyncHandler(
   },
 );
 
-export const authProfile = asyncHandler(
+export const authUpdateProfile = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const _id = req.user?._id;
     const filePath = req.file?.path;
@@ -232,5 +232,14 @@ export const authProfile = asyncHandler(
     ).select("-password -refreshToken");
 
     return res.status(200).json(new ApiResponse(200, "File uploaded", user));
+  },
+);
+
+export const authProfile = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const _id = req.user?._id;
+    const user = await User.findById(_id).select("-password -refreshToken");
+
+    return res.status(200).json(new ApiResponse(200, "User Profile", user));
   },
 );
