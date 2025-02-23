@@ -11,6 +11,7 @@ import { decodePassword, hashPassword } from "../lib/password.js";
 import { generateAccessAndRefreshToken } from "../utils/token.js";
 import { configurations } from "../config/config.js";
 import { Id } from "../../types/express.js";
+import { uploadAvatarOnCloudinary } from "../lib/cloudinary.js";
 
 interface RequestBody {
   username: string;
@@ -206,5 +207,30 @@ export const authUsers = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const users = await User.find().select("-password");
     return res.status(200).json(new ApiResponse(200, "Users", users));
+  },
+);
+
+export const authProfile = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const _id = req.user?._id;
+    const filePath = req.file?.path;
+
+    if (!filePath) {
+      return res.status(400).json(new ApiError(400, "File is required"));
+    }
+
+    const image = await uploadAvatarOnCloudinary(filePath);
+
+    if (!image) {
+      return res.status(400).json(new ApiError(400, "Failed to upload file"));
+    }
+
+    const user = await User.findByIdAndUpdate(
+      _id,
+      { avatar: image },
+      { new: true },
+    ).select("-password -refreshToken");
+
+    return res.status(200).json(new ApiResponse(200, "File uploaded", user));
   },
 );
