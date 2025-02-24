@@ -1,8 +1,11 @@
+import { authStore } from "../store/authStore";
+
 import { EyeClose, EyeOpen } from "../components/Eye";
 import { Auth, Heading, Label, Submit, Info } from "../components/Form";
 
 export const Register = () => {
-  const toggle = false;
+  const { eyeToggle, handleToggleEye } = authStore();
+
   return (
     <main className="w-screen h-screen grid place-items-center">
       <section className="w-full">
@@ -34,26 +37,30 @@ export const Register = () => {
           <div className="relative">
             <Label id="password" label="Password:" />
             <input
-              type={`${toggle ? "text" : "password"}`}
+              type={`${eyeToggle ? "text" : "password"}`}
               className="input w-full"
               placeholder="Enter you password"
               id="password"
               required
               autoComplete="off"
             />
-            {toggle ? <EyeOpen /> : <EyeClose />}
+            <span className="cursor-pointer" onClick={handleToggleEye}>
+              {eyeToggle ? <EyeOpen /> : <EyeClose />}
+            </span>
           </div>
           <div className="relative">
             <Label id="confirm-password" label="Confirm Password:" />
             <input
-              type={`${toggle ? "text" : "password"}`}
+              type={`${eyeToggle ? "text" : "password"}`}
               className="input w-full"
               placeholder="Confirm Password"
               id="confirm-password"
               required
               autoComplete="off"
             />
-            {toggle ? <EyeOpen /> : <EyeClose />}
+            <span className="cursor-pointer" onClick={handleToggleEye}>
+              {eyeToggle ? <EyeOpen /> : <EyeClose />}
+            </span>
           </div>
           <Submit text="Register" />
           <div>
