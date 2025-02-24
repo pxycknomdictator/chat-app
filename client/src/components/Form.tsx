@@ -1,26 +1,28 @@
 import { Link } from "react-router-dom";
 
-export const Heading = ({ text }: { text: string }) => (
+type Heading = { text: string };
+
+export const Heading = ({ text }: Heading) => (
   <h1 className="text-[1.5rem] md:text-[1.7rem] font-medium text-center mb-2">
     {text}
   </h1>
 );
 
-export const Label = ({ id, label }: { id: string; label: string }) => (
+type Label = { id: string; label: string };
+
+export const Label = ({ id, label }: Label) => (
   <label id={id} className="text-[14px] font-medium mb-1.5 block">
     {label}
   </label>
 );
 
-export const Auth = ({
-  text,
-  link,
-  linkText,
-}: {
+type Auth = {
   text: string;
   link: string;
   linkText: string;
-}) => (
+};
+
+export const Auth = ({ text, link, linkText }: Auth) => (
   <p className="text-[14px] font-medium">
     {text}{" "}
     <span className="text-blue-500 hover:text-blue-600 hover:underline">
@@ -29,9 +31,15 @@ export const Auth = ({
   </p>
 );
 
-export const Submit = ({ text }: { text: string }) => {
+type Submit = {
+  text: string;
+  pending: boolean;
+};
+
+export const Submit = ({ text, pending }: Submit) => {
   return (
     <button
+      disabled={pending}
       className="btn btn-block mb-3 bg-blue-500 hover:bg-blue-600"
       type={"submit"}
     >
