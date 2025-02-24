@@ -1,14 +1,14 @@
 import { EyeClose, EyeOpen } from "../components/Eye";
-import { Submit } from "../components/Submit";
-import { Auth, Heading, Label } from "../components/Form";
+import { Auth, Heading, Label, Submit, Info } from "../components/Form";
 
 export const Register = () => {
   const toggle = false;
   return (
     <main className="w-screen h-screen grid place-items-center">
-      <section>
+      <section className="w-full">
         <Heading text="Register" />
-        <form className="w-lg space-y-4">
+        <Info text="Please fill in the form below to create an account." />
+        <form className="w-[90%] sm:w-[80%] mx-auto md:w-lg space-y-5">
           <div>
             <Label id="username" label="Name:" />
             <input
@@ -56,8 +56,14 @@ export const Register = () => {
             {toggle ? <EyeOpen /> : <EyeClose />}
           </div>
           <Submit text="Register" />
+          <div>
+            <Auth
+              text="Already have an account?"
+              link="/login"
+              linkText="Login"
+            />
+          </div>
         </form>
-        <Auth text="Don't have an account?" link="/login" />
       </section>
     </main>
   );
