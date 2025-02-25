@@ -18,7 +18,9 @@ export interface Register {
 export const Register = () => {
   const navigate = useNavigate();
 
-  const { eyeToggle, handleToggleEye } = authStore();
+  const eyeToggle = authStore((state) => state.eyeToggle);
+  const handleToggleEye = authStore((state) => state.handleToggleEye);
+
   const {
     register,
     handleSubmit,

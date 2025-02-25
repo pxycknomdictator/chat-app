@@ -1,6 +1,7 @@
 import axios from "axios";
 import { configurations } from "../config/config";
 import { Register } from "../pages/Register";
+import { Login } from "../pages/Login";
 
 export const api = axios.create({
   baseURL: configurations.SERVER_URL,
@@ -10,4 +11,8 @@ export const api = axios.create({
 
 export const httpRegister = async (form: Register) => {
   return await api.post("/auth/register", form);
+};
+
+export const httpLogin = async (form: Login) => {
+  return await api.post("/auth/login", form);
 };
