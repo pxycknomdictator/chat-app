@@ -205,7 +205,9 @@ export const authRefreshToken = asyncHandler(
 
 export const authUsers = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const users = await User.find().select("-password");
+    const users = await User.find({ _id: { $ne: req.user?._id } }).select(
+      "-password",
+    );
     return res.status(200).json(new ApiResponse(200, "Users", users));
   },
 );
