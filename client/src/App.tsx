@@ -1,31 +1,24 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
-  Route,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { Chat } from "./pages/Chat";
+import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
+import { Chat } from "./components/Chat";
 import { ProtectedRoute } from "./components/Protected";
 
 export const App = () => {
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Chat />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-      </Route>,
-    ),
-  );
+  const router = createBrowserRouter([
+    { path: "/login", element: <Login /> },
+    { path: "/register", element: <Register /> },
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Home />
+        </ProtectedRoute>
+      ),
+      children: [{ path: "users/:id", element: <Chat /> }],
+    },
+  ]);
   return <RouterProvider router={router} />;
 };

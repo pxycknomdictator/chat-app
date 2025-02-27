@@ -16,3 +16,7 @@ export const httpRegister = async (form: Register) => {
 export const httpLogin = async (form: Login) => {
   return await api.post("/auth/login", form);
 };
+
+export const httpUsers = async () => {
+  return await api.get("/auth/users");
+};
