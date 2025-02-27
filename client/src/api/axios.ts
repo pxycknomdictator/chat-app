@@ -28,3 +28,9 @@ export const httpRefreshToken = async () => {
 export const httpProfile = async () => {
   return await api.get("/auth/profile");
 };
+
+export const httpUploadProfile = async (file: FormData) => {
+  return await api.put("/auth/update-profile", file, {
+    headers: { "Content-Type": "multipart/formdata" },
+  });
+};

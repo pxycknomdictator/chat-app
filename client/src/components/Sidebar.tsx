@@ -57,7 +57,7 @@ export const Sidebar = () => {
           <img
             className="w-full object-cover object-left rounded-full"
             src={profile?.data?.data.avatar}
-            crossOrigin="use-credentials"
+            crossOrigin="anonymous"
           />
         </NavLink>
       </section>
