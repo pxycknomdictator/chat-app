@@ -20,3 +20,11 @@ export const httpLogin = async (form: Login) => {
 export const httpUsers = async () => {
   return await api.get("/auth/users");
 };
+
+export const httpRefreshToken = async () => {
+  return await api.post("/auth/refresh-token");
+};
+
+export const httpProfile = async () => {
+  return await api.get("/auth/profile");
+};
