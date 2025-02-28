@@ -34,3 +34,7 @@ export const httpUploadProfile = async (file: FormData) => {
     headers: { "Content-Type": "multipart/formdata" },
   });
 };
+
+export const httpMessages = async (_id: string) => {
+  return await api.get(`/messages/${_id}`);
+};

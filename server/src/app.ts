@@ -20,8 +20,10 @@ app.use(express.static(path.resolve("public", "temp")));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 import userRouter from "./routes/user.routes.js";
+import messageRouter from "./routes/message.routes.js";
 
 app.use("/api/auth", userRouter);
+app.use("/api/messages", messageRouter);
 
 app.use(errorHandler);
 

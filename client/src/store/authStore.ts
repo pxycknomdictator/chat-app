@@ -1,11 +1,16 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+interface AuthData {
+  accessToken: string;
+  userId?: string;
+}
+
 interface AuthStoreInterface {
   eyeToggle: boolean;
-  auth: null | unknown;
+  auth: AuthData | null;
   handleToggleEye: () => void;
-  setAuth: (data: unknown) => void;
+  setAuth: (data: AuthData) => void;
 }
 
 export const authStore = create<AuthStoreInterface>()(
