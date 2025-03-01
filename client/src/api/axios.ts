@@ -38,3 +38,7 @@ export const httpUploadProfile = async (file: FormData) => {
 export const httpMessages = async (_id: string) => {
   return await api.get(`/messages/${_id}`);
 };
+
+export const httpUser = async (_id: string) => {
+  return await api.get(`/auth/${_id}`);
+};

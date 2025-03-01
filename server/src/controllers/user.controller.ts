@@ -269,3 +269,11 @@ export const authDelete = asyncHandler(
       .json(new ApiResponse(200, "User Deleted Successfully"));
   },
 );
+
+export const authUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const user = await User.findById(id).select("-password -refreshToken");
+    return res.status(200).json(new ApiResponse(200, "user", user));
+  },
+);

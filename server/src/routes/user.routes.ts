@@ -8,6 +8,7 @@ import {
   authUpdateProfile,
   authProfile,
   authDelete,
+  authUser,
 } from "../controllers/user.controller.js";
 
 import { authGuard } from "../middlewares/authentication.js";
@@ -22,6 +23,7 @@ router.post("/refresh-token", authRefreshToken);
 router.get("/logout", authGuard, authLogout);
 router.get("/users", authGuard, authUsers);
 router.get("/profile", authGuard, authProfile);
+router.get("/:id", authGuard, authUser);
 
 router.delete("/delete-user", authGuard, authDelete);
 router.put(
