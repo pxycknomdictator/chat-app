@@ -9,7 +9,7 @@ import {
   createMessage,
   getMessages,
 } from "./controllers/message.controller.js";
-import { Message } from "./models/message.model.js";
+import { User } from "./models/user.model.js";
 
 const server = createServer(app);
 
@@ -45,20 +45,34 @@ io.use((socket, next) => {
 
 const sockets = new Map();
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   const userId = socket.data.user._id;
   const socketId = socket.id;
 
   sockets.set(userId, socketId);
 
+  await User.findByIdAndUpdate(
+    userId,
+    { $set: { status: "online" } },
+    { new: true },
+  );
+
   console.log(sockets);
 
   socket.on("sendMessage", async (message: string, receiver: string) => {
     await createMessage(userId, receiver, message);
-    const conversations = await getMessages(userId, receiver);
 
     const receiverSockets = sockets.get(receiver);
-    io.to(receiverSockets).emit("receiveMessage", conversations);
+    io.to(receiverSockets).emit("receiveMessage", "");
+  });
+
+  socket.on("disconnect", async () => {
+    await User.findByIdAndUpdate(
+      userId,
+      { $set: { status: "offline" } },
+      { new: true },
+    );
+    sockets.delete(userId);
   });
 });
 

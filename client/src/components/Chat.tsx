@@ -1,9 +1,10 @@
-import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Message, Right } from "./Message";
 import { ChatContext } from "../pages/Home";
 import { useQuery } from "@tanstack/react-query";
 import { httpMessages, httpUser } from "../api/axios";
+import { Loader } from "./Loader";
 
 export interface MessageFace {
   _id: string;
@@ -14,14 +15,16 @@ export interface MessageFace {
 
 export const Chat = () => {
   const socket = useContext(ChatContext);
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);
-
-  const [conversation, setConversation] = useState<string[]>([]);
-
-  const [message, setMessage] = useState<string>("");
   const { _id } = useParams();
 
-  const { data: conversations, refetch } = useQuery({
+  const [localMessages, setLocalMessages] = useState<string[]>([]);
+  const [message, setMessage] = useState<string>("");
+
+  const {
+    data: conversations,
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ["conversations", _id],
     queryFn: async () => await httpMessages(_id!),
   });
@@ -32,48 +35,47 @@ export const Chat = () => {
   });
 
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [conversation, conversations]);
-
-  useEffect(() => {
     if (!socket) return;
 
-    socket.on("receiveMessage", () => {
+    const handleReceiveMessage = () => {
+      setLocalMessages([]);
       refetch();
-    });
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
 
     return () => {
-      setConversation([]);
+      socket.off("receiveMessage", handleReceiveMessage);
     };
-  }, [socket]);
+  }, [socket, refetch]);
 
   const handleSubmitMessage = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (socket && message.trim()) {
       socket.emit("sendMessage", message, _id);
-      setConversation((prev) => [...prev, message]);
+      setLocalMessages((prev) => [...prev, message]);
+      setMessage("");
     }
-    setMessage("");
   };
+
+  const allMessages = [...(conversations?.data?.data || []), ...localMessages];
 
   return (
     <div className="w-[65.3rem] flex flex-col h-screen px-4 py-5">
       <div className="w-full py-2 mb-2 pl-2">
         <div className="flex items-center gap-4">
-          <div className="w-9 rounded-full">
+          <div className="w-12 h-12 rounded-full overflow-hidden">
             <img
-              className="w-full object-cover object-left rounded-full"
+              className="w-full object-cover"
               src={user?.data?.data.avatar}
+              alt="avatar"
               crossOrigin="anonymous"
             />
           </div>
           <div>
             <span className="font-semibold mb-1 block">
               {user?.data?.data.username}
-            </span>{" "}
+            </span>
             <p className="text-gray-500 text-[12px]">
               {user?.data?.data.status}
             </p>
@@ -81,20 +83,25 @@ export const Chat = () => {
         </div>
       </div>
 
-      {conversations?.data.data && conversations.data.data.length <= 0 ? (
+      {isLoading ? (
+        <div className="py-3 h-screen grid place-items-center">
+          <Loader />
+        </div>
+      ) : allMessages.length === 0 ? (
         <div className="py-3 h-screen grid place-items-center">
           <h1 className="text-3xl font-semibold text-gray-700 rounded-lg">
             No Chats
           </h1>
         </div>
       ) : (
-        <div className="py-3 overflow-y-auto max-h-full">
-          {conversations?.data?.data?.map((message: MessageFace) => (
-            <Message key={message._id} messages={message} />
-          ))}
-          {conversation.map((msg, index) => (
-            <Right key={index} message={msg} />
-          ))}
+        <div className="py-3 overflow-y-auto h-full">
+          {allMessages.map((msg, index) =>
+            typeof msg === "string" ? (
+              <Right key={index} message={msg} />
+            ) : (
+              <Message key={msg._id} messages={msg as MessageFace} />
+            ),
+          )}
         </div>
       )}
 
