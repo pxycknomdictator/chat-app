@@ -1,5 +1,6 @@
-import { authStore } from "../store/authStore";
 import { jwtDecode } from "jwt-decode";
+
+import { authStore } from "../store/authStore";
 import { MessageFace } from "./Chat";
 
 interface User {

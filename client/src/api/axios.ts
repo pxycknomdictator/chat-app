@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { configurations } from "../config/config";
 import { Register } from "../pages/Register";
 import { Login } from "../pages/Login";

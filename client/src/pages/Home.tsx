@@ -1,6 +1,7 @@
-import { createContext, useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
 import { Outlet } from "react-router-dom";
+import { io, Socket } from "socket.io-client";
+import { createContext, useEffect, useState } from "react";
+
 import { Sidebar } from "../components/Sidebar";
 import { configurations } from "../config/config";
 
@@ -18,7 +19,6 @@ export const Home = () => {
 
     return () => {
       newSocket.disconnect();
-      console.log("❌ Socket disconnected");
     };
   }, []);
 

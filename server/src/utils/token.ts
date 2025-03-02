@@ -33,7 +33,7 @@ export const generateAccessAndRefreshToken = (
     .cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: configurations.NODE_ENV === "production",
-      maxAge: 15 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
       sameSite: "strict",
     })
     .cookie("refreshToken", refreshToken, {

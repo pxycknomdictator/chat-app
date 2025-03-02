@@ -10,6 +10,7 @@ export interface User {
   username: string;
   email: string;
   avatar: string;
+  status: string;
 }
 
 export const Sidebar = () => {

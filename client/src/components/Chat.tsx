@@ -1,8 +1,9 @@
-import { FormEvent, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { FormEvent, useContext, useEffect, useState } from "react";
+
 import { Message, Right } from "./Message";
 import { ChatContext } from "../pages/Home";
-import { useQuery } from "@tanstack/react-query";
 import { httpMessages, httpUser } from "../api/axios";
 import { Loader } from "./Loader";
 
@@ -104,7 +105,6 @@ export const Chat = () => {
           )}
         </div>
       )}
-
       <form onSubmit={handleSubmitMessage}>
         <section className="flex gap-2.5">
           <input

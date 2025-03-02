@@ -5,10 +5,7 @@ import jwt from "jsonwebtoken";
 import { app } from "./app.js";
 import { configurations } from "./config/config.js";
 import { database } from "./lib/db.js";
-import {
-  createMessage,
-  getMessages,
-} from "./controllers/message.controller.js";
+import { createMessage } from "./controllers/message.controller.js";
 import { User } from "./models/user.model.js";
 
 const server = createServer(app);
@@ -56,8 +53,6 @@ io.on("connection", async (socket) => {
     { $set: { status: "online" } },
     { new: true },
   );
-
-  console.log(sockets);
 
   socket.on("sendMessage", async (message: string, receiver: string) => {
     await createMessage(userId, receiver, message);
