@@ -12,7 +12,7 @@ interface User {
 export const Left = ({ message }: { message: string }) => {
   return (
     <div className="chat chat-start">
-      <div className="chat-bubble">{message}</div>
+      <div className="chat-bubble text-[14px] md:text-[17px]">{message}</div>
     </div>
   );
 };
@@ -20,7 +20,7 @@ export const Left = ({ message }: { message: string }) => {
 export const Right = ({ message }: { message: string }) => {
   return (
     <div className="chat chat-end">
-      <div className="chat-bubble">{message}</div>
+      <div className="chat-bubble text-[14px] md:text-[17px]">{message}</div>
     </div>
   );
 };

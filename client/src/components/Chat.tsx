@@ -65,7 +65,7 @@ export const Chat = () => {
     <div className="w-[65.3rem] flex flex-col h-screen px-4 py-5">
       <div className="w-full py-2 mb-2 pl-2">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full overflow-hidden">
+          <div className="w-7 h-7 md:w-10 md:h-10 rounded-full overflow-hidden">
             <img
               className="w-full object-cover"
               src={user?.data?.data.avatar}
@@ -74,7 +74,7 @@ export const Chat = () => {
             />
           </div>
           <div>
-            <span className="font-semibold mb-1 block">
+            <span className="font-semibold mb-1 block text-[14px] md:text-[16px]">
               {user?.data?.data.username}
             </span>
             <p className="text-gray-500 text-[12px]">

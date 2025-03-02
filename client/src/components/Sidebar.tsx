@@ -41,10 +41,13 @@ export const Sidebar = () => {
   );
 
   return (
-    <aside className="w-80 p-3 bg-base-200 min-h-screen" role="complementary">
+    <aside
+      className="w-[700px] md:w-[450px] p-3 bg-base-200 min-h-screen"
+      role="complementary"
+    >
       <section className="flex justify-between">
         <h1
-          className="text-xl mb-4 font-semibold"
+          className="md:text-xl mb-4 font-semibold"
           role="heading"
           aria-level={1}
         >
@@ -52,7 +55,7 @@ export const Sidebar = () => {
         </h1>
         <NavLink
           state={profile?.data.data}
-          className="w-8 rounded-full"
+          className="w-6 md:w-8 rounded-full"
           to={`/profile/${profile?.data?.data.username.toLowerCase()}`}
         >
           <img
