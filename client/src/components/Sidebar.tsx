@@ -42,7 +42,7 @@ export const Sidebar = () => {
 
   return (
     <aside
-      className="w-[700px] md:w-[450px] p-3 bg-base-200 min-h-screen"
+      className="w-full md:w-[300px] lg:w-90 p-3 bg-base-200 min-h-screen"
       role="complementary"
     >
       <section className="flex justify-between">

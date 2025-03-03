@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { FormEvent, useContext, useEffect, useState } from "react";
 
@@ -15,7 +15,7 @@ export interface MessageFace {
 }
 
 export const Chat = () => {
-  const socket = useContext(ChatContext);
+  const { socket } = useContext(ChatContext);
   const { _id } = useParams();
 
   const [localMessages, setLocalMessages] = useState<string[]>([]);
@@ -62,9 +62,9 @@ export const Chat = () => {
   const allMessages = [...(conversations?.data?.data || []), ...localMessages];
 
   return (
-    <div className="w-[65.3rem] flex flex-col h-screen px-4 py-5">
+    <div className="w-full md:w-[80rem] flex flex-col h-screen px-4 py-5">
       <div className="w-full py-2 mb-2 pl-2">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between md:justify-start md:relative gap-4">
           <div className="w-7 h-7 md:w-10 md:h-10 rounded-full overflow-hidden">
             <img
               className="w-full object-cover"
@@ -73,17 +73,21 @@ export const Chat = () => {
               crossOrigin="anonymous"
             />
           </div>
-          <div>
-            <span className="font-semibold mb-1 block text-[14px] md:text-[16px]">
+          <div className="flex items-center gap-3 md:flex-col md:gap-[2px]">
+            <span className="font-semibold mb-1 block text-[17px] md:text-[16px]">
               {user?.data?.data.username}
             </span>
-            <p className="text-gray-500 text-[12px]">
+            <p
+              className={`${user?.data?.data.status === "online" ? "text-green-500" : "text-gray-500"} text-[14px]`}
+            >
               {user?.data?.data.status}
             </p>
           </div>
+          <Link className="btn btn-soft md:absolute md:right-0" to={"/"}>
+            back
+          </Link>
         </div>
       </div>
-
       {isLoading ? (
         <div className="py-3 h-screen grid place-items-center">
           <Loader />
